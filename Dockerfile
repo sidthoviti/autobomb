@@ -41,8 +41,11 @@ RUN git clone https://github.com/sidthoviti/autobomb.git /app/autobomb
 # Set the working directory
 WORKDIR /app/autobomb
 
-# Make shell scripts executable
-RUN chmod + *.sh
+# Install WebTech
+RUN pip install webtech
+
+# Install WebAnalyze
+RUN go install -v github.com/rverton/webanalyze/cmd/webanalyze@latest
 
 # Install TestSSL
 RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git && \
@@ -60,10 +63,18 @@ RUN git clone https://github.com/0xKayala/NucleiFuzzer.git && \
     chmod +x install.sh && \
     ./install.sh
 
+# Install ffuf
+RUN go install github.com/ffuf/ffuf/v2@latest
+
 # Install Subfinder
 RUN go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
+# Install Nikto
+RUN apt-get install nikto -y
+
 # Run updates for tools
+RUN webanalyze -update
 RUN nuclei -up && nuclei
 RUN subfinder -up
 RUN httpx -up
+

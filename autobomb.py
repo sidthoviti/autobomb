@@ -71,6 +71,11 @@ webtech_log_path = os.path.join(project_directory, 'webtech_' + project_name)
 webtech_cmd = f"webtech -u {url} 2>&1 | tee {webtech_log_path}"
 run_command(webtech_cmd, YELLOW, "WebTech", webtech_log_path)
 
+# webanalyze
+webanalyze_log_path = os.path.join(project_directory, 'webanalyze_' + project_name)
+webanalyze_cmd = f"webanalyze -host {url} -crawl 1 2>&1 | tee {webanalyze_log_path}"
+run_command(webanalyze_cmd, YELLOW, "webanalyze", webanalyze_log_path)
+
 # Nuclei
 nuclei_log_path = os.path.join(project_directory, "nuclei_" + project_name)
 nuclei_cmd = f"nuclei -u {url} 2>&1 | tee {nuclei_log_path}"
@@ -83,18 +88,13 @@ run_command(nf_cmd, YELLOW, "NucleiFuzzer", nf_log_path)
 
 # TestSSL
 testssl_log_path = os.path.join(project_directory, 'testssl_' + project_name)
-testssl_cmd = f"/home/sid/tools/testssl.sh/./testssl.sh --warnings off {url} 2>&1 | tee {testssl_log_path}"
+testssl_cmd = f"testssl.sh --warnings off {url} 2>&1 | tee {testssl_log_path}"
 run_command(testssl_cmd, YELLOW, "TestSSL", testssl_log_path)
 
 # Nmap
 nmap_log_path = os.path.join(project_directory, 'nmap_' + project_name)
 nmap_cmd = f"nmap -A -T4 {url} 2>&1 | tee {nmap_log_path}"
 run_command(nmap_cmd, YELLOW, "Nmap", nmap_log_path)
-
-# Wafw00f
-wafw00f_log_path = os.path.join(project_directory, 'wafw00f_' + project_name)
-wafw00f_cmd = f"wafw00f {url} 2>&1 | tee {wafw00f_log_path}"
-run_command(wafw00f_cmd, YELLOW, "Wafw00f", wafw00f_log_path)
 
 # Directory Fuzzing
 ffuf_log_path = os.path.join(project_directory, 'ffuf_dir_output.txt')
