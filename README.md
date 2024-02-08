@@ -4,6 +4,7 @@ AutoBomb is a powerful penetration testing automation framework designed to stre
 
 ## Features
 
+- Automates recon, tests for low hanging vulnerabilities, fuzzes parameters to test SQLi, XSS, SSRF, Open Redirects, and many more.
 - Automates the execution of popular security tools such as WebTech, Nuclei, Nmap, Nikto, and more.
 - Provides a modular and extensible architecture for adding custom tools and scripts.
 - Simplifies the setup and configuration process with a centralized JSON configuration file.
