@@ -1,6 +1,9 @@
 # Use Kali Linux as the base image
 FROM kalilinux/kali-rolling
 
+# Update Packages
+RUN apt-get update -y
+
 # Install required packages
 RUN apt-get update && apt-get install -y \
     wget \
@@ -48,8 +51,9 @@ RUN pip install webtech
 RUN go install -v github.com/rverton/webanalyze/cmd/webanalyze@latest
 
 # Install TestSSL
-RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git && \
-    ln -s /app/autobomb/testssl.sh/testssl.sh /usr/local/bin/testssl.sh
+#RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git && \
+#    ln -s /app/autobomb/testssl.sh/testssl.sh /usr/local/bin/testssl.sh
+RUN apt install testssl.sh
 
 # Install Httpx
 RUN go install github.com/projectdiscovery/httpx/cmd/httpx@latest

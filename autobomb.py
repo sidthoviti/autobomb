@@ -43,11 +43,12 @@ NC = "\033[0m"  # No Color
 with open("config.json") as f:
     config = json.load(f)
 
-# Retrieve URL, Cookie, ProjectName, and LogLocation from config
+# Retrieve URL, Cookie, ProjectName, LogLocation, and Wordlists from config
 url = config.get("URL")
 cookie = config.get("Cookie")
 project_name = config.get("ProjectName")
 log_location = config.get("LogLocation", ".")
+wordlist_path = config.get("WordlistPath", "/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt")
 
 if not url:
     print("Error: URL not provided in the config file.")
@@ -88,7 +89,7 @@ run_command(nf_cmd, YELLOW, "NucleiFuzzer", nf_log_path)
 
 # TestSSL
 testssl_log_path = os.path.join(project_directory, 'testssl_' + project_name)
-testssl_cmd = f"testssl.sh --warnings off {url} 2>&1 | tee {testssl_log_path}"
+testssl_cmd = f"testssl --warnings off {url} 2>&1 | tee {testssl_log_path}"
 run_command(testssl_cmd, YELLOW, "TestSSL", testssl_log_path)
 
 # Nmap
@@ -96,9 +97,9 @@ nmap_log_path = os.path.join(project_directory, 'nmap_' + project_name)
 nmap_cmd = f"nmap -A -T4 {url} 2>&1 | tee {nmap_log_path}"
 run_command(nmap_cmd, YELLOW, "Nmap", nmap_log_path)
 
-# Directory Fuzzing
+# Fuff Directory Fuzzing
 ffuf_log_path = os.path.join(project_directory, 'ffuf_dir_output.txt')
-ffuf_cmd = f"ffuf -u {url}/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -mc 200 -c -r -sf -o {os.path.join(project_directory, 'ffuf_dir.csv')} -of csv 2>&1 | tee {ffuf_log_path}"
+ffuf_cmd = f"ffuf -u {url}/FUZZ -w {wordlist_path} -mc 200 -c -r -sf -o {os.path.join(project_directory, 'ffuf_dir.csv')} -of csv 2>&1 | tee {ffuf_log_path}"
 run_command(ffuf_cmd, YELLOW, "Ffuf", ffuf_log_path)
 
 # Nikto
