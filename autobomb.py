@@ -67,10 +67,10 @@ def run_command(cmd, color, tool_name, log_path):
     print(f"Log file content:")
     subprocess.run(['cat', log_path])
 
-# WebTech
-webtech_log_path = os.path.join(project_directory, 'webtech_' + project_name)
-webtech_cmd = f"webtech -u {url} 2>&1 | tee {webtech_log_path}"
-run_command(webtech_cmd, YELLOW, "WebTech", webtech_log_path)
+# WhatWeb
+whatweb_log_path = os.path.join(project_directory, 'whatweb_' + project_name)
+webtech_cmd = f"whatweb {url} 2>&1 | tee {whatweb_log_path}"
+run_command(whatweb_cmd, YELLOW, "WhatWeb", webtech_log_path)
 
 # webanalyze
 webanalyze_log_path = os.path.join(project_directory, 'webanalyze_' + project_name)
@@ -94,13 +94,27 @@ run_command(testssl_cmd, YELLOW, "TestSSL", testssl_log_path)
 
 # Nmap
 nmap_log_path = os.path.join(project_directory, 'nmap_' + project_name)
-nmap_cmd = f"nmap -A -T4 {url} 2>&1 | tee {nmap_log_path}"
+nmap_cmd = f"nmap -A -T4 {url.split('://')[1]} 2>&1 | tee {nmap_log_path}"
+#nmap_cmd = f"nmap -A -T4 {url} 2>&1 | tee {nmap_log_path}"
 run_command(nmap_cmd, YELLOW, "Nmap", nmap_log_path)
 
 # Fuff Directory Fuzzing
+# Check if the URL ends with a page extension or has a trailing slash
+if url.endswith(('/', '.php', '.html', '.htm', '.asp', '.aspx', '.jsp', '.cgi')):
+    # If it ends with a page extension or has a trailing slash, remove the last part to get the directory
+    ffuf_url = url.rstrip('/') + '/'  # Remove trailing slash if present, then add a new one
+else:
+    # If it doesn't end with a page extension and doesn't have a trailing slash, remove the last part to get the directory
+    url_parts = url.rsplit('/', 1)
+    if len(url_parts) == 2:
+        ffuf_url = url_parts[0] + '/'  # Modify the URL for ffuf
+    else:
+        ffuf_url = url  # Use the original URL if it doesn't have a path component
+
 ffuf_log_path = os.path.join(project_directory, 'ffuf_dir_output.txt')
-ffuf_cmd = f"ffuf -u {url}/FUZZ -w {wordlist_path} -mc 200 -c -r -sf -o {os.path.join(project_directory, 'ffuf_dir.csv')} -of csv 2>&1 | tee {ffuf_log_path}"
+ffuf_cmd = f"ffuf -u {ffuf_url}FUZZ -w {wordlist_path} -mc all -c -r -sf -o {os.path.join(project_directory, 'ffuf_dir.csv')} -of csv 2>&1 | tee {ffuf_log_path}"
 run_command(ffuf_cmd, YELLOW, "Ffuf", ffuf_log_path)
+#ffuf_cmd = f"ffuf -u {url}/FUZZ -w {wordlist_path} -mc all -c -r -sf -o {os.path.join(project_directory, 'ffuf_dir.csv')} -of csv 2>&1 | tee {ffuf_log_path}"
 
 # Nikto
 nikto_log_path = os.path.join(project_directory, "nikto_" + project_name)
@@ -108,7 +122,7 @@ nikto_cmd = f"nikto -host {url} 2>&1 | tee {nikto_log_path}"
 run_command(nikto_cmd, YELLOW, "Nikto", nikto_log_path)
 
 # Subfinder
-subfinder_log_path = os.path.join(project_directory, 'subfinder_' + project_name)
-subfinder_cmd = f"subfinder -d {url} 2>&1 | tee {subfinder_log_path}"
-run_command(subfinder_cmd, YELLOW, "Subfinder", subfinder_log_path)
+#subfinder_log_path = os.path.join(project_directory, 'subfinder_' + project_name)
+#subfinder_cmd = f"subfinder -d {url} 2>&1 | tee {subfinder_log_path}"
+#run_command(subfinder_cmd, YELLOW, "Subfinder", subfinder_log_path)
 

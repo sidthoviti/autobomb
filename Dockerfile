@@ -44,16 +44,16 @@ RUN git clone https://github.com/sidthoviti/autobomb.git /app/autobomb
 # Set the working directory
 WORKDIR /app/autobomb
 
-# Install WebTech
-RUN pip install webtech
-
 # Install WebAnalyze
 RUN go install -v github.com/rverton/webanalyze/cmd/webanalyze@latest
 
 # Install TestSSL
 #RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git && \
 #    ln -s /app/autobomb/testssl.sh/testssl.sh /usr/local/bin/testssl.sh
-RUN apt install testssl.sh
+#RUN apt install -y testssl.sh
+RUN wget https://raw.githubusercontent.com/drwetter/testssl.sh/3.2/testssl.sh && \
+    chmod +x testssl.sh && \
+    cp testssl.sh /usr/bin/testssl
 
 # Install Httpx
 RUN go install github.com/projectdiscovery/httpx/cmd/httpx@latest
@@ -65,7 +65,8 @@ RUN go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 RUN git clone https://github.com/0xKayala/NucleiFuzzer.git && \
     cd NucleiFuzzer && \
     chmod +x install.sh && \
-    ./install.sh
+    ./install.sh && \
+    chmod +x NucleiFuzzer.sh && mv NucleiFuzzer.sh /usr/bin/nf
 
 # Install ffuf
 RUN go install github.com/ffuf/ffuf/v2@latest
