@@ -38,7 +38,7 @@ url = config.get("URL")
 cookie = config.get("Cookie")
 project_name = config.get("ProjectName")
 log_location = config.get("LogLocation", ".")
-wordlist_path = config.get("WordlistPath", "/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt")
+wordlist_path = config.get("WordlistPath", "/usr/share/seclists/Discovery/Web-Content/raft-large-words.txt")
 
 if not url:
     print("Error: URL not provided in the config file.")
@@ -77,6 +77,11 @@ nf_log_path = os.path.join(project_directory, 'nf_' + project_name)
 nf_cmd = f"nf -d {url} 2>&1 | tee {nf_log_path}"
 run_command(nf_cmd, YELLOW, "NucleiFuzzer", nf_log_path)
 
+# Wapiti
+wapiti_log_path = os.path.join(project_directory, "wapiti_", + project_name)
+wapiti_cmd = f"wapiti -u {url} -o {os.path.join(project_directory, 'wapiti_output')} 2>&1 | tee {wapiti_log_path}"
+run_command(wapiti_cmd, YELLOW, "Wapiti", wapiti_log_path)
+
 # TestSSL
 testssl_log_path = os.path.join(project_directory, 'testssl_' + project_name)
 testssl_cmd = f"testssl --warnings off {url} 2>&1 | tee {testssl_log_path}"
@@ -103,7 +108,7 @@ if url.endswith(('.php', '.html', '.htm', '.asp', '.aspx', '.jsp', '.cgi')):
 else:
     ffuf_url = url + '/FUZZ'
 
-ffuf_cmd = f"ffuf -u {ffuf_url} -w {wordlist_path} -mc all -c -r -sf -ac -o {os.path.join(project_directory, 'ffuf_dir.csv')} -of csv 2>&1 | tee {ffuf_log_path}"
+ffuf_cmd = f"ffuf -u {ffuf_url} -w {wordlist_path} -mc all -c -r -sf -ac -of csv -o {os.path.join(project_directory, 'ffuf_dir.csv')} 2>&1 | tee {ffuf_log_path}"
 run_command(ffuf_cmd, YELLOW, "Ffuf", ffuf_log_path)
 
 # Nikto

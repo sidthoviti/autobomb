@@ -2,6 +2,6 @@
     "URL": "https://xss.challenge.training.hacq.me/challenges/baby01.php",
     "Cookie": "",
     "ProjectName": "babyxss",
-    "WordlistPath": "./wordlists/directory-list-2.3-medium.txt"
+    "LogLocation": "./logs/",
+    "WordlistPath": "/usr/share/seclists/Discovery/Web-Content/raft-large-words.txt"
 }
-
